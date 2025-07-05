@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="/chat">Chat</a>
+    <h1>บันทึกข้อมูลของคุณ เพื่อให้ AI จัดทริป</h1>
+    <form id="travelForm">
+        <label for="name">ชื่อ:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="travel_date">วันที่ต้องการไปเที่ยว:</label><br>
+        <input type="text" id="travel_date" name="travel_date" required><br><br>
+        
+        <label for="destination">สถานที่ที่อยากไป:</label><br>
+        <input type="text" id="destination" name="destination" required><br><br>
+        
+        <input type="submit" value="Submit">
+    </form>
+    <p id="message"></p>
+
+    <script>
+        document.getElementById('travelForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const name = document.getElementById('name').value;
+            const travel_date = document.getElementById('travel_date').value;
+            const destination = document.getElementById('destination').value;
+
+            const formData = {
+                name: name,
+                travel_date: travel_date,
+                destination: destination
+            };
+
+            try {
+                const response = await fetch('/submit-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const messageElement = document.getElementById('message');
+                if (response.ok) {
+                    messageElement.textContent = 'Data saved successfully!';
+                    messageElement.style.color = 'green';
+                    document.getElementById('travelForm').reset(); // Clear the form
+                } else {
+                    const errorText = await response.text();
+                    messageElement.textContent = `Error: ${errorText}`;
+                    messageElement.style.color = 'red';
+                }
+            } catch (error) {
+                const messageElement = document.getElementById('message');
+                messageElement.textContent = `Network error: ${error.message}`;
+                messageElement.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
