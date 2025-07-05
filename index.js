@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const app = express();
 const port = 3000;
-const dataFilePath = path.join(__dirname, 'data.json');
+const dataFilePath = path.join(__dirname, 'src', 'data.json');
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
@@ -18,8 +18,8 @@ app.get('/', (req, res) => {
 });
 
 // Define a route to serve chat.html
-app.get('/chat', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'chat.html'));
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'admin.html'));
 });
 
 // POST endpoint to save form data
@@ -50,6 +50,40 @@ app.post('/submit-data', (req, res) => {
                 return res.status(500).send('Error saving data.');
             }
             res.status(200).send('Data saved successfully!');
+        });
+    });
+});
+
+// New POST endpoint to proxy data to the external webhook
+app.post('/send-to-webhook', (req, res) => {
+    fs.readFile(dataFilePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading data.json:', err);
+            return res.status(500).send('Error reading data file.');
+        }
+
+        const jsonData = JSON.parse(data);
+        const webhookUrl = 'http://localhost:5678/webhook-test/7ada7183-0f68-4a5c-bf90-77bc92515ff4';
+
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(webhookResponse => {
+            res.status(200).send('Data sent to webhook successfully: ' + webhookResponse);
+        })
+        .catch(error => {
+            console.error('Error sending data to webhook:', error);
+            res.status(500).send('Failed to send data to webhook: ' + error.message);
         });
     });
 });

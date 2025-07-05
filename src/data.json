@@ -1,0 +1,42 @@
+[
+  {
+    "name": "เอก",
+    "travel_date": "6-12 เดือนนี้",
+    "destination": "ทะเล"
+  },
+  {
+    "name": "แนน",
+    "travel_date": "11-12 เดือนนี้",
+    "destination": "เชียงใหม่, ชลบุรี"
+  },
+  {
+    "name": "นัท",
+    "travel_date": "ว่างตลอดทั้งเดือน",
+    "destination": "ไปไหนก็ได้"
+  },
+  {
+    "name": "พิม",
+    "travel_date": "ปลายเดือนนี้",
+    "destination": "กรุงเทพฯ"
+  },
+  {
+    "name": "มด",
+    "travel_date": "ก่อนวันที่ 15 เดือนนี้",
+    "destination": "เชียงราย"
+  },
+  {
+    "name": "ตั้ม",
+    "travel_date": "ช่วงต้นเดือนหน้า",
+    "destination": "ทะเล"
+  },
+  {
+    "name": "นุ่น",
+    "travel_date": "กลางเดือนนี้",
+    "destination": "พัทยา"
+  },
+  {
+    "name": "โอ๋",
+    "travel_date": "ปลายเดือนหน้า",
+    "destination": "กระบี่"
+  }
+]
