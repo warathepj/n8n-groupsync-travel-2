@@ -8,9 +8,41 @@
 <body>
     <a href="/">Home</a>
     <div id="dataContainer"></div>
-    <button id="sendButton">send</button>
-
+    <button id="sendButton">ให้ AI จัดทริปให้คุณ</button>
+    <div id="webhookResponse"></div>
+<!-- render webhook response -->
     <script>
+        function formatText(text) {
+            const words = text.split(' ');
+            let formattedText = '';
+            let lineCount = 0;
+            let currentLineWords = [];
+
+            let currentWordCount = 0;
+            let currentLine = '';
+            let lines = [];
+
+            for (let i = 0; i < words.length; i++) {
+                currentLine += (currentLine === '' ? '' : ' ') + words[i];
+                currentWordCount++;
+
+                if (currentWordCount === 20 || i === words.length - 1) {
+                    lines.push(currentLine);
+                    currentLine = '';
+                    currentWordCount = 0;
+                }
+            }
+
+            let finalFormattedText = '';
+            for (let i = 0; i < lines.length; i++) {
+                finalFormattedText += lines[i] + '<br>';
+                if ((i + 1) % 3 === 0 && i !== lines.length - 1) {
+                    finalFormattedText += '<br>'; // Add a blank line
+                }
+            }
+            return finalFormattedText;
+        }
+
         fetch('./data.json')
             .then(response => response.json())
             .then(data => {
@@ -45,11 +77,29 @@
                 return response.text();
             })
             .then(data => {
-                alert('Server response: ' + data);
+                const webhookResponse = document.getElementById('webhookResponse');
+                try {
+                    const jsonStartIndex = data.indexOf('{');
+                    if (jsonStartIndex !== -1) {
+                        const jsonString = data.substring(jsonStartIndex);
+                        const jsonResponse = JSON.parse(jsonString);
+                        if (jsonResponse.text) {
+                            webhookResponse.innerHTML = 'Server response: <br>' + formatText(jsonResponse.text);
+                        } else {
+                            webhookResponse.textContent = 'Server response (parsed, no text field): ' + data;
+                        }
+                    } else {
+                        webhookResponse.textContent = 'Server response (raw): ' + data;
+                    }
+                } catch (e) {
+                    console.error('Error parsing JSON:', e);
+                    webhookResponse.textContent = 'Server response (error parsing): ' + data;
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to trigger server: ' + error.message);
+                const webhookResponse = document.getElementById('webhookResponse');
+                webhookResponse.textContent = 'Failed to trigger server: ' + error.message;
             });
         });
     </script>
