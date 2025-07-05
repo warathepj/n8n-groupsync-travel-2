@@ -34,9 +34,9 @@ The application features a simple, user-friendly interface for data entry and a 
 
 ## Github
     ```bash
-
+    https://github.com/warathepj/n8n-groupsync-travel-2.git
     ```
-    
+
 ## How to Run
 
 1.  **Install Dependencies**:
@@ -45,6 +45,8 @@ The application features a simple, user-friendly interface for data entry and a 
     ```
 2.  **Start the Server**:
     ```bash
+    npm start
+    or
     node index.js
     ```
 3.  **Access the Application**:
